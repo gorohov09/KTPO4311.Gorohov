@@ -2,25 +2,23 @@
 
 namespace KTPO4311.Gorohov.Lib.src.LogAn
 {
+    /// <summary>
+    /// Анализ лог. файлов
+    /// </summary>
     public class LogAnalyzer
     {
-        public bool WasLastFileNameIsValid { get; set; }
+        public LogAnalyzer()
+        {
+        }
 
+        /// <summary>
+        /// Проверка правильности имени файла
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public bool IsValidLogFileName(string fileName)
         {
-            WasLastFileNameIsValid = false;
-
-            if (string.IsNullOrEmpty(fileName))
-            {
-                throw new ArgumentException("Имя файла должно быть задано");
-            }
-            if (!fileName.EndsWith(".SLF", StringComparison.CurrentCultureIgnoreCase))
-            {
-                return false;
-            }
-            
-            WasLastFileNameIsValid = true;
-            return true;
+            return ExtensionManagerFactory.Create().IsValid(fileName);
         }
     }
 }

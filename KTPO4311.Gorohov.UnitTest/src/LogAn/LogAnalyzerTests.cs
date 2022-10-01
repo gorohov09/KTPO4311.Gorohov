@@ -8,45 +8,78 @@ namespace KTPO4311.Gorohov.UnitTest.src.LogAn
     public class LogAnalyzerTests
     {
         [Test]
-        public void IsValidLogFileName_BadExtension_ReturnFalse()
+        public void IsValidFileName_NameSupportedExtension_ReturnsTrue()
         {
-            LogAnalyzer analyzer = new LogAnalyzer();
+            FakeExtensionManager fakeManager = new FakeExtensionManager();
+            fakeManager.WillBeValid = true;
+            ExtensionManagerFactory.SetManager(fakeManager);
 
-            bool result = analyzer.IsValidLogFileName("filewithbadextension.foo");
+            LogAnalyzer logAnalyzer = new LogAnalyzer();
 
-            Assert.IsFalse(result);
-        }
-
-        [TestCase("filewithbadextension.slf")]
-        [TestCase("filewithbadextension.SLF")]
-        public void IsValidLogFileName_ValidExtension_ReturnTrue(string fileName)
-        {
-            LogAnalyzer analyzer = new LogAnalyzer();
-
-            bool result = analyzer.IsValidLogFileName(fileName);
+            bool result = logAnalyzer.IsValidLogFileName("short.ext");
 
             Assert.IsTrue(result);
         }
 
         [Test]
-        public void IsValidFileName_EmptyFileName_Throws()
+        public void IsValidFileName_NameUnsupportedExtension_ReturnsFalse()
         {
-            LogAnalyzer analyzer = new LogAnalyzer();
+            FakeExtensionManager fakeManager = new FakeExtensionManager();
+            fakeManager.WillBeValid = false;
+            ExtensionManagerFactory.SetManager(fakeManager);
 
-            var ex = Assert.Catch<Exception>(() => analyzer.IsValidLogFileName(""));
+            LogAnalyzer logAnalyzer = new LogAnalyzer();
 
-            StringAssert.Contains("Имя файла должно быть задано", ex.Message);
+            bool result = logAnalyzer.IsValidLogFileName("short.exe");
+
+            Assert.IsFalse(result);
         }
 
-        [TestCase("badfile.foo", false)]
-        [TestCase("goodfile.SLF", true)]
-        public void IsValidFileName_WhenCalled_ChangesWasLastFilenameValid(string file, bool expected)
+        [Test]
+        public void IsValidFileName_ExtManagerThrowsException_ReturnsFalse()
         {
-            LogAnalyzer analyzer = new LogAnalyzer();
+            FakeExtensionManager fakeManager = new FakeExtensionManager();
+            fakeManager.WillBeValid = false;
+            fakeManager.WillThrow = new Exception();
+            ExtensionManagerFactory.SetManager(fakeManager);
 
-            analyzer.IsValidLogFileName(file);
+            LogAnalyzer logAnalyzer = new LogAnalyzer();
 
-            Assert.AreEqual(analyzer.WasLastFileNameIsValid, expected);
+            bool result = logAnalyzer.IsValidLogFileName("short.exe");
+
+            Assert.IsFalse(result);
+        }
+
+        [TearDown]
+        public void AfterEachTest()
+        {
+            ExtensionManagerFactory.SetManager(null);
+        }
+    }
+    
+    /// <summary>
+    /// Поддельный менеджер расширений
+    /// </summary>
+    public class FakeExtensionManager : IExtensionManager
+    {
+        /// <summary>
+        /// Поле, которое позволяет настроить поддельный результат
+        /// </summary>
+        public bool WillBeValid = false;
+
+        /// <summary>
+        /// Поле, которое позволяет настроить поддельное исключение
+        /// </summary>
+        public Exception WillThrow = null;
+
+        public bool IsValid(string fileName)
+        {
+            if (WillThrow != null)
+            {
+                return false;
+            }
+
+            return WillBeValid;
         }
     }
 }
