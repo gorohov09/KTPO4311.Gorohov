@@ -7,11 +7,8 @@ namespace KTPO4311.Gorohov.Lib.src.LogAn
     /// </summary>
     public class LogAnalyzer
     {
-        private readonly IExtensionManager _extensionManager;
-
-        public LogAnalyzer(IExtensionManager extensionManager)
+        public LogAnalyzer()
         {
-            _extensionManager = extensionManager;
         }
 
         /// <summary>
@@ -21,7 +18,7 @@ namespace KTPO4311.Gorohov.Lib.src.LogAn
         /// <returns></returns>
         public bool IsValidLogFileName(string fileName)
         {
-            return _extensionManager.IsValid(fileName);
+            return ExtensionManagerFactory.Create().IsValid(fileName);
         }
     }
 }

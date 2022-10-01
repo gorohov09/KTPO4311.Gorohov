@@ -12,8 +12,9 @@ namespace KTPO4311.Gorohov.UnitTest.src.LogAn
         {
             FakeExtensionManager fakeManager = new FakeExtensionManager();
             fakeManager.WillBeValid = true;
+            ExtensionManagerFactory.SetManager(fakeManager);
 
-            LogAnalyzer logAnalyzer = new LogAnalyzer(fakeManager);
+            LogAnalyzer logAnalyzer = new LogAnalyzer();
 
             bool result = logAnalyzer.IsValidLogFileName("short.ext");
 
@@ -25,8 +26,9 @@ namespace KTPO4311.Gorohov.UnitTest.src.LogAn
         {
             FakeExtensionManager fakeManager = new FakeExtensionManager();
             fakeManager.WillBeValid = false;
+            ExtensionManagerFactory.SetManager(fakeManager);
 
-            LogAnalyzer logAnalyzer = new LogAnalyzer(fakeManager);
+            LogAnalyzer logAnalyzer = new LogAnalyzer();
 
             bool result = logAnalyzer.IsValidLogFileName("short.exe");
 
@@ -39,12 +41,19 @@ namespace KTPO4311.Gorohov.UnitTest.src.LogAn
             FakeExtensionManager fakeManager = new FakeExtensionManager();
             fakeManager.WillBeValid = false;
             fakeManager.WillThrow = new Exception();
+            ExtensionManagerFactory.SetManager(fakeManager);
 
-            LogAnalyzer logAnalyzer = new LogAnalyzer(fakeManager);
+            LogAnalyzer logAnalyzer = new LogAnalyzer();
 
             bool result = logAnalyzer.IsValidLogFileName("short.exe");
 
             Assert.IsFalse(result);
+        }
+
+        [TearDown]
+        public void AfterEachTest()
+        {
+            ExtensionManagerFactory.SetManager(null);
         }
     }
     

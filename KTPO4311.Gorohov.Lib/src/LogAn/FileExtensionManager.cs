@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 
 namespace KTPO4311.Gorohov.Lib.src.LogAn
 {
@@ -15,9 +16,13 @@ namespace KTPO4311.Gorohov.Lib.src.LogAn
         /// <exception cref="NotImplementedException"></exception>
         public bool IsValid(string fileName)
         {
-            //Читать конфигурационный файл
-            //Вернуть true, если конфигурация поддерживается
-            throw new NotImplementedException();
+            string configExtension = ConfigurationManager.AppSettings["goodExtension"];
+            if (fileName.EndsWith(configExtension))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
