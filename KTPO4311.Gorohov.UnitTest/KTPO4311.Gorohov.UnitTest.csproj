@@ -10,4 +10,8 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\KTPO4311.Gorohov.Lib\KTPO4311.Gorohov.Lib.csproj" />
+  </ItemGroup>
+
 </Project>
