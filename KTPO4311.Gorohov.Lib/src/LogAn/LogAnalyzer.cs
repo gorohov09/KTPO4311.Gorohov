@@ -29,8 +29,7 @@ namespace KTPO4311.Gorohov.Lib.src.LogAn
         {
             if (fileName.Length < 8)
             {
-                //Передать внешней службе сообщение об ошибке
-                //"Слишком короткое имя файла: " + fileName
+                WebServiceFactory.Create().LogError("Слишком короткое имя файла: " + fileName);
             }
         }
     }
