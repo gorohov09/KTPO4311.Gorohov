@@ -82,4 +82,20 @@ namespace KTPO4311.Gorohov.UnitTest.src.LogAn
             return WillBeValid;
         }
     }
+
+    /// <summary>
+    /// Поддельная веб-служба
+    /// </summary>
+    public class FakeWebService : IWebService
+    {
+        /// <summary>
+        /// Поле запоминает состояние после вызова LogError()
+        /// </summary>
+        public string LastError;
+
+        public void LogError(string message)
+        {
+            LastError = message;
+        }
+    }
 }
