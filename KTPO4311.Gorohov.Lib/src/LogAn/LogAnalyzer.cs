@@ -20,5 +20,18 @@ namespace KTPO4311.Gorohov.Lib.src.LogAn
         {
             return ExtensionManagerFactory.Create().IsValid(fileName);
         }
+
+        /// <summary>
+        /// Анализировать лог. файлы
+        /// </summary>
+        /// <param name="fileName"></param>
+        public void Analyze(string fileName)
+        {
+            if (fileName.Length < 8)
+            {
+                //Передать внешней службе сообщение об ошибке
+                //"Слишком короткое имя файла: " + fileName
+            }
+        }
     }
 }
