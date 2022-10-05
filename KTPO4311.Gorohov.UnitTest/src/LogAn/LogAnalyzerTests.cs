@@ -50,10 +50,26 @@ namespace KTPO4311.Gorohov.UnitTest.src.LogAn
             Assert.IsFalse(result);
         }
 
+        [Test]
+        public void Analyze_TooShortFileName_CallsWebService()
+        {
+            FakeWebService mockWebService = new FakeWebService();
+            WebServiceFactory.SetManager(mockWebService);
+
+            LogAnalyzer logAnalyzer = new LogAnalyzer();
+
+            string toShortFileName = "abc.ext";
+
+            logAnalyzer.Analyze(toShortFileName);
+
+            StringAssert.Contains("Слишком короткое имя файла: abc.ext", mockWebService.LastError);
+        }
+
         [TearDown]
         public void AfterEachTest()
         {
             ExtensionManagerFactory.SetManager(null);
+            WebServiceFactory.SetManager(null);
         }
     }
     
