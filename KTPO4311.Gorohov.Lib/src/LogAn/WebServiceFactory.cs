@@ -14,7 +14,7 @@
             return new WebService();
         }
 
-        public static void SetManager(IWebService srv)
+        public static void SetWebService(IWebService srv)
         {
             _customService = srv;
         }

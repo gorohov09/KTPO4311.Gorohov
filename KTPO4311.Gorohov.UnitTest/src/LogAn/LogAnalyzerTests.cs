@@ -54,7 +54,7 @@ namespace KTPO4311.Gorohov.UnitTest.src.LogAn
         public void Analyze_TooShortFileName_CallsWebService()
         {
             FakeWebService mockWebService = new FakeWebService();
-            WebServiceFactory.SetManager(mockWebService);
+            WebServiceFactory.SetWebService(mockWebService);
 
             LogAnalyzer logAnalyzer = new LogAnalyzer();
 
@@ -65,11 +65,32 @@ namespace KTPO4311.Gorohov.UnitTest.src.LogAn
             StringAssert.Contains("Слишком короткое имя файла: abc.ext", mockWebService.LastError);
         }
 
+        [Test]
+        public void Analyze_WebServiceThrows_SendsEmail()
+        {
+            FakeWebService stubWebService = new FakeWebService();
+            WebServiceFactory.SetWebService(stubWebService);    
+            stubWebService.WillThrow = new Exception("это подделка");
+
+            FakeEmailService mockEmail = new FakeEmailService();
+            EmailServiceFactory.SetEmailService(mockEmail);
+
+            LogAnalyzer logAnalyzer = new LogAnalyzer();
+            string toShortFileName = "abc.txt";
+
+            logAnalyzer.Analyze(toShortFileName);
+
+            StringAssert.Contains("andrej.gorokhov2017@yandex.ru", mockEmail.To);
+            StringAssert.Contains("Невозможно вызвать веб-сервис", mockEmail.Subject);
+            StringAssert.Contains("это подделка", mockEmail.Body);
+        }
+
         [TearDown]
         public void AfterEachTest()
         {
             ExtensionManagerFactory.SetManager(null);
-            WebServiceFactory.SetManager(null);
+            WebServiceFactory.SetWebService(null);
+            EmailServiceFactory.SetEmailService(null);
         }
     }
     
@@ -109,9 +130,32 @@ namespace KTPO4311.Gorohov.UnitTest.src.LogAn
         /// </summary>
         public string LastError;
 
+        public Exception WillThrow = null;
+
         public void LogError(string message)
         {
+            if (WillThrow != null)
+            {
+                throw WillThrow;
+            }
+
             LastError = message;
+        }
+    }
+
+    public class FakeEmailService : IEmailService
+    {
+        public string To;
+
+        public string Subject;
+
+        public string Body;
+
+        public void SendEmail(string to, string subject, string body)
+        {
+            To = to;
+            Subject = subject;
+            Body = body;
         }
     }
 }
