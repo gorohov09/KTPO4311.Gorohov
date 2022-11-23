@@ -18,7 +18,16 @@ namespace KTPO4311.Gorohov.Lib.src.LogAn
         /// <returns></returns>
         public bool IsValidLogFileName(string fileName)
         {
-            return ExtensionManagerFactory.Create().IsValid(fileName);
+            try
+            {
+                return ExtensionManagerFactory.Create().IsValid(fileName);
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
+            
         }
 
         /// <summary>
