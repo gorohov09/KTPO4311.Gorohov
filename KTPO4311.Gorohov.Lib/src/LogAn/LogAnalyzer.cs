@@ -20,5 +20,27 @@ namespace KTPO4311.Gorohov.Lib.src.LogAn
         {
             return ExtensionManagerFactory.Create().IsValid(fileName);
         }
+
+        /// <summary>
+        /// Анализировать лог. файлы
+        /// </summary>
+        /// <param name="fileName"></param>
+        public void Analyze(string fileName)
+        {
+            try
+            {
+                if (fileName.Length < 8)
+                {
+                    IWebService srv = WebServiceFactory.Create();
+                    srv.LogError("Слишком короткое имя файла: " + fileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                IEmailService srv = EmailServiceFactory.Create();
+                srv.SendEmail("andrej.gorokhov2017@yandex.ru", "Невозможно вызвать веб-сервис", ex.Message);
+            }
+            
+        }
     }
 }
