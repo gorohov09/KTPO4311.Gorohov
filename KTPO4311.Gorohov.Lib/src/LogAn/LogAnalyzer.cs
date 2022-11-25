@@ -5,11 +5,15 @@ namespace KTPO4311.Gorohov.Lib.src.LogAn
     /// <summary>
     /// Анализ лог. файлов
     /// </summary>
-    public class LogAnalyzer
+    public class LogAnalyzer : ILogAnalyzer
     {
+        //public event LogAnalyzerAction Analyzed;
+
         public LogAnalyzer()
         {
         }
+
+        public event LogAnalyzerAction Analyzed;
 
         /// <summary>
         /// Проверка правильности имени файла
@@ -49,7 +53,17 @@ namespace KTPO4311.Gorohov.Lib.src.LogAn
                 IEmailService srv = EmailServiceFactory.Create();
                 srv.SendEmail("andrej.gorokhov2017@yandex.ru", "Невозможно вызвать веб-сервис", ex.Message);
             }
+
+            RaiseAnalyzedEvent();
             
+        }
+
+        protected void RaiseAnalyzedEvent()
+        {
+            if (Analyzed != null)
+            {
+                Analyzed();
+            }
         }
     }
 }

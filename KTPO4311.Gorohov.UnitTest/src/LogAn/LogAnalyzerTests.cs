@@ -85,6 +85,23 @@ namespace KTPO4311.Gorohov.UnitTest.src.LogAn
             StringAssert.Contains("это подделка", mockEmail.Body);
         }
 
+        [Test]
+        public void Analyze_WhenAnalyzed_FiredEvent()
+        {
+            bool analyzedFired = false;
+
+            LogAnalyzer logAnalyzer = new LogAnalyzer();
+
+            logAnalyzer.Analyzed += delegate ()
+            {
+                analyzedFired = true;
+            };
+
+            logAnalyzer.Analyze("test.txt");
+
+            Assert.IsTrue(analyzedFired);
+        }
+
         [TearDown]
         public void AfterEachTest()
         {
